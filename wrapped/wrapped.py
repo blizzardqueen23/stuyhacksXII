@@ -22,7 +22,7 @@ def create_wrapped_slide(
 
     font_large = ImageFont.truetype("wrapped/Roboto-SemiBold.ttf", 140)
     font_medium = ImageFont.truetype("wrapped/Roboto-SemiBold.ttf", 100)
-    font_small = ImageFont.truetype("wrapped/Roboto-SemiBold.ttf", 35)
+    font_small = ImageFont.truetype("wrapped/Roboto-SemiBold.ttf", 75)
 
     bg_color = random.choice(["#1DB954", "#191414", "#FFAA33", "#FF5733", "#800080"])
     image = Image.new("RGB", (900, 1600), color=bg_color)
@@ -71,7 +71,7 @@ def create_wrapped_slide(
     counter = 0
     freq = ""
     for c in camera:
-        if len(c) > counter:
+        if len(camera[c]) > counter:
             freq = c
             counter = len(c)
 
@@ -82,7 +82,7 @@ def create_wrapped_slide(
         + "\nwith "
         + str(int(100 * counter / photo_count))
         + "\npictures taken\non it",
-        font=font_medium,
+        font=font_small,
         fill="white",
     )
 
@@ -96,13 +96,13 @@ def create_wrapped_slide(
     counter = 0
     freq = ""
     for s in season:
-        if len(s) > counter:
+        if len(season[s]) > counter:
             freq = s
             counter = len(s)
 
     draw.text(
         (50, 200),
-        "You took\npictures most\nfrequently in\nthe " + str(s),
+        "You took\npictures\nmost\nfrequently in\nthe " + str(s),
         font=font_large,
         fill="white",
     )
@@ -117,14 +117,14 @@ def create_wrapped_slide(
     counter = 0
     freq = ""
     for t in time:
-        if len(t) > counter:
+        if len(time[t]) > counter:
             freq = t
             counter = len(t)
 
     draw.text(
         (50, 200),
         "And lastly,\nyou usually\ntook pictures\nin the \n" + str(t).lower(),
-        font=font_large,
+        font=font_medium,
         fill="white",
     )
 
@@ -166,3 +166,30 @@ create_wrapped_slide(
     locList=countryList,
     resolution=out["Resolution"],
 )
+
+
+def generate_pdf_from_directory(directory, output_pdf):
+    image_paths = [
+        os.path.join(directory, f)
+        for f in os.listdir(directory)
+        if f.lower().endswith(".jpg")
+    ]
+
+    image_paths.sort()
+
+    if not image_paths:
+        print("No JPG images found in the directory.")
+        return
+
+    images = [Image.open(image_path).convert("RGB") for image_path in image_paths]
+
+    images[0].save(
+        output_pdf, save_all=True, append_images=images[1:], resolution=100.0
+    )
+
+    print(f"PDF saved as {output_pdf}")
+
+
+directory = "wrapped/testout"
+output_pdf = "output.pdf"
+generate_pdf_from_directory(directory, output_pdf)
