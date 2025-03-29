@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
+import sys
 import os
 
 #given a dictionary
@@ -41,8 +42,28 @@ def create_collage(images, output_folder="photo_output", collage_size=(900, 1600
     return collage_filename
 
 
-test = ["../TestImages/00016096_DxO.jpg","../TestImages/00016147_DxO.jpg","../TestImages/00016152_DxO.jpg","../TestImages/00016225_DxO.jpg"]
-collage_path = create_collage(test, text="Spring")
-print(f"Collage saved at: {collage_path}")
+#test = ["../TestImages/00016096_DxO.jpg","../TestImages/00016147_DxO.jpg","../TestImages/00016152_DxO.jpg","../TestImages/00016225_DxO.jpg"]
+#collage_path = create_collage(test, text="Spring")
+#print(f"Collage saved at: {collage_path}")
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
+from readEXIF import EXIF
+
+reader = EXIF("TestImages")
+
+reader.runSorts()
+out = reader.outputDictionary
+categories = out.keys()
+list_sub = out.values()
+
+final = []
+
+for category, category_data in d.items():
+    #print(f"Category: {category}")
+    for subcategory, images in category_data.items():
+        collage_path = create_collage(images, text=subcategory)
+        final.append(collage_path)
+
+
 
 
