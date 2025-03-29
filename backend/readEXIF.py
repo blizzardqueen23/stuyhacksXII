@@ -121,6 +121,7 @@ class EXIF:
         """
 
         for imagePath in self.filePathList:
+            print("Processing " + imagePath)
             # image = Image.open(imagePath)
             # exif_data = image.getexif()
 
